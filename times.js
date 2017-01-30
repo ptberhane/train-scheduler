@@ -22,18 +22,31 @@ var config = {
       event.preventDefault();
 
       var trainName = $("#train-name-input").val().trim();
-      var destination = $("#destination-input").val().trim(); 
-      var firstTrain= $("#first-train-input").val().trim();
+      var newDestination = $("#destination-input").val().trim(); 
+      var firstTrain= moment($("#first-train-input").val().trim(),"HH:mm").format("");
       var newFrequency =$("#frequency-input").val().trim();
-      
+     
+
+
+
+
    /*   inputted data is stored*/
     traindatabase.ref().push({
-      trainName:trainName,
-      destination:destination,
+      name:trainName,
+      destination:newDestination,
       firstTrain:firstTrain,
       frequency:newFrequency
 
       });
+
+
+  $("#train-name-input").val("");
+  $("#destination-input").val("");
+  $("#first-train-input").val("");
+  $("#frequency-input").val("");
+
+  // Prevents moving to new page
+  return false;
 
 });
 
@@ -43,13 +56,15 @@ var config = {
       console.log(childSnapshot.val().destination);
       console.log(childSnapshot.val().firstTrain);
       console.log(childSnapshot.val().frequency);
-     
+  
+    var minutesAway = moment().diff(moment.unix(firstTrain,"X"),"minutes"); 
     /*information from database is displayed in current times section*/
     var newTablerow = $('<tr>');
     newTablerow.append("<td>"+childSnapshot.val().trainName+"</td>" + 
       "<td>"+childSnapshot.val().destination+"</td>" + 
       "<td>"+childSnapshot.val().frequency+"</td>"+
-      "<td>"+childSnapshot.val().firstTrain+ "</td>")
+      "<td>"+childSnapshot.val().firstTrain+ "</td>"+ 
+      "<td>"+ minutesAway +"</td>")
     $("#train-table").append(newTablerow);
 
     });
